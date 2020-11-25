@@ -1,9 +1,9 @@
 import pandas
-from alpha_vantage.timeseries import TimeSeries
-import matplotlib.pyplot as plt
 
-ts = TimeSeries(key='1X1VXIAYUFBBM00J', output_format='pandas')
-data, meta_data = ts.get_intraday(symbol='AAPL',interval='5min', outputsize='full')
+import matplotlib.pyplot as plt
+import StocksReciever
+
+data = StocksReciever.receiveStocks("AAPL", 5)
 
 print(data)
 
@@ -12,10 +12,27 @@ high = data["2. high"]
 low = data["3. low"]
 close = data["4. close"]
 
-fig, ax = plt.subplots()
-ax.plot(data.index, open, label='open')
-ax.plot(data.index, high, label='high')
-ax.plot(data.index, low, label='low')
-ax.plot(data.index, close, label='close')
+deltas = []
+
+prevVal = close[0]
+for closeVal in close:
+    deltas.append(prevVal - closeVal)
+    prevVal = closeVal
+
+deltasPercentage = []
+for i in range(0, len(close)):
+    deltasPercentage.append((deltas[i] / close[i])*100)
+
+fig = plt.figure()
+
+plt.subplot(2,1,1)
+plt.bar(data.index, high-low, width=0.0005, bottom=low)
+plt.bar(data.index, open-close, width=0.001, bottom=close)
+plt.plot(data.index, close, label='close')
 plt.legend()
+
+plt.subplot(2,1,2)
+plt.bar(data.index, deltas, 0.002)
+plt.bar(data.index, deltasPercentage, 0.001)
+
 plt.show()
