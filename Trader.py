@@ -1,41 +1,52 @@
-class Position:
-    close_time = None
-    close_value = None
-
-    def __init__(self, time, value, amount=1, **kwargs):
-        self.open_time = time
-        self.open_value = value
-        self.amount = amount
-        self.stop_loss = kwargs.stopLoss
-        self.take_profit = kwargs.takeProfit
-
-    def close(self, time, value):
-        self.close_time = time
-        self.close_value = value
-
+import StocksReciever
+import Position
 
 class Trader:
-
     openedPosition = None
     closedPositions = []
+    
+    def __init__(self, strategy, budget, position_max_value):
+    	self.strategy = strategy
+    	self.budget = budget
+    	self.posMaxValue = position_max_value
 
-    def shouldOpenPosition(self, trade_data):
-        return True
 
-    def shouldClosePosition(self, trade_data):
-        if self.openedPosition is not None:
-            last_value = trade_data[-1]
-            if last_value > self.openedPosition.stop_loss or last_value < self.openedPosition.take_profit:
-                return True
-            else:
-                return False
-        else:
-            return False
+	def update(self)
+		if(strategy is None):
+			return
+		
+		tradeData = [0]
+		
+		if(openedPosition is not None):
+			if(strategy.shouldClosePosition(tradeData, openedPosition)):
+				closePosition()
+		else:
+			if(strategy.shouldOpenPosition(tradeData)):
+				openValue = tradeData[-1]
+				position = Position(
+					0, 
+					openValue,
+					1,
+					stopLoss=openValue-(openValue/100),
+					takeProfit=openValue+(openValue/100*2)
+				 )
+				openPosition(position)
+
 
     def openPosition(self, position):
         self.openedPosition = position
+        
+        self.budget -= position.open_value
+        
+        print("Position open: {p}".format(p=str(position)))
+
 
     def closePosition(self, time, value):
         self.openedPosition.close(time, value)
         self.closedPositions.append(self.openedPosition)
+        
+        self.budget += value;
+        
+        print("Position close: {p}".format(p=str(position)))
+        
         self.openedPosition = None
