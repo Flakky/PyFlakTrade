@@ -5,7 +5,7 @@ import StocksReciever
 
 data = StocksReciever.receiveStocks("AAPL", 5)
 
-print(data)
+print(StocksReciever.getCurrentValue("AAPL"))
 
 open = data["1. open"]
 high = data["2. high"]
