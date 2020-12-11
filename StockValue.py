@@ -29,12 +29,13 @@ class StockValue:
 	-Low: {low}
 	-Volume: {vol}""".format(
 			symbol=self.symbol,
-			close=self.close_value,
-			open=self.open_value,
-			high=self.high_value,
-			low=self.low_value,
+			close=round(self.close_value, 3),
+			open=round(self.open_value, 3),
+			high=round(self.high_value, 3),
+			low=round(self.low_value, 3),
 			vol=self.volume,
 			close_time=self.time_end,
 			open_time=self.time_start,
-			color="\033[92m" if self.close_value >= self.open_value else "\031[92m"
+			color="\033[92m" if self.close_value > self.open_value
+			else ("" if self.close_value == self.open_value else "\031[92m")
 		)
