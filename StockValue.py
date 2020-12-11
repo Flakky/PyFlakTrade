@@ -2,14 +2,14 @@ import datetime
 
 
 class StockValue:
-	symbol = ""
-	close_value = 0
-	open_value = 0
-	high_value = 0
-	low_value = 0
-	volume = 0
-	time_start = 0
-	time_end = 0
+	symbol: str = ""
+	close_value: int = 0
+	open_value: int = 0
+	high_value: int = 0
+	low_value: int = 0
+	volume: int = 0
+	time_start: datetime.datetime = 0
+	time_end: datetime.datetime = 0
 
 	def __init__(self, symbol: str, last_value: int, time_end, **kwargs):
 		self.symbol = symbol

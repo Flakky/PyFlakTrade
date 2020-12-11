@@ -2,15 +2,21 @@ import time
 import StocksReciever
 import Position
 import Strategy
+import datetime
+import StockValue
 
 
 class Trader:
-	openedPosition = None
-	closedPositions = []
-	tradeInProgress = False
-	backtest = {"testMode": False, "tradeData": {}, "testCurrentTime": None}
+	strategy: Strategy.Strategy = None
+	budget: float = 0.0
+	posMaxValue: float = 0.0
+	allowed_stocks: list[str] = []
+	openedPosition: Position.Position = None
+	closedPositions: list[Position.Position] = []
+	tradeInProgress: bool = False
+	backtest = {"testMode": False, "tradeData": [], "testCurrentTime": None}
 
-	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks):
+	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks: list[str]):
 		self.strategy = strategy
 		self.budget = budget
 		self.posMaxValue = position_max_value
@@ -44,7 +50,7 @@ class Trader:
 
 		print("Position open: {p}".format(p=str(position)))
 
-	def closePosition(self, close_time, value: float):
+	def closePosition(self, close_time: datetime.datetime, value: float):
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
 
@@ -55,7 +61,7 @@ class Trader:
 		self.openedPosition = None
 
 	def recieveTradeData(self):
-		trade_data = {"12.01.2020, 23.54": 125.534}
+		trade_data = []
 		return trade_data
 
 	def start(self):
@@ -67,6 +73,6 @@ class Trader:
 	def stop(self):
 		self.tradeInProgress = False
 
-	def enableBacktestMode(self, test_trade_data):
-		self.backtest["testMode"] = True
-		self.backtest["tradeData"] = test_trade_data
+	def enableBacktestMode(self, test_trade_data: list[StockValue.StockValue]):
+		self.backtest.testMode = True
+		self.backtest.tradeData = test_trade_data
