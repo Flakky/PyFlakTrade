@@ -1,5 +1,6 @@
 import datetime
 
+
 class StockValue:
 	symbol = ""
 	close_value = 0
@@ -19,7 +20,7 @@ class StockValue:
 		self.time_start = kwargs.get("time_start", time_end)
 		self.volume = kwargs.get("volume", 0)
 		self.open_value = kwargs.get("open_value", last_value)
-		
+
 	def __str__(self):
 		return """StockValue for '{symbol}':
 	-Open: {open} - {open_time}
@@ -27,13 +28,13 @@ class StockValue:
 	-High: {high}
 	-Low: {low}
 	-Volume: {vol}""".format(
-				symbol=self.symbol,
-				close=self.close_value,
-				open=self.open_value,
-				high=self.high_value,
-				low=self.low_value,
-				vol=self.volume,
-				close_time=self.time_end,
-				open_time=self.time_start,
-				color="\033[92m" if self.close_value >= self.open_value else "\031[92m"
-			)
+			symbol=self.symbol,
+			close=self.close_value,
+			open=self.open_value,
+			high=self.high_value,
+			low=self.low_value,
+			vol=self.volume,
+			close_time=self.time_end,
+			open_time=self.time_start,
+			color="\033[92m" if self.close_value >= self.open_value else "\031[92m"
+		)
