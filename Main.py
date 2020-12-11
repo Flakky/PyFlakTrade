@@ -1,13 +1,14 @@
 import pandas
-
-import matplotlib.pyplot as plt
+import time
 import StocksReciever
 
-data = StocksReciever.receiveStocks("AAPL", 5)
+# data = StocksReciever.receiveStocks("AAPL", 5)
 
-print(StocksReciever.getCurrentValue("AAPL"))
+while True:
+	print(StocksReciever.getCurrentValue("AAPL"))
+	time.sleep(1)
 
-print(data)
+#print(data)
 
 # open = data["1. open"]
 # high = data["2. high"]

@@ -4,7 +4,7 @@ class Position:
 
     def __init__(self, time, value: int, amount: int = 1, **kwargs):
         self.open_time = time
-        self.open_value = value
+        self.open_val	ue = value
         self.amount = amount
         self.stop_loss = kwargs.stopLoss
         self.take_profit = kwargs.takeProfit

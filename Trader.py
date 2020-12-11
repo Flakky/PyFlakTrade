@@ -10,10 +10,11 @@ class Trader:
 	tradeInProgress = False
 	backtest = {"testMode": False, "tradeData": {}, "testCurrentTime": None}
 
-	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float):
+	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks):
 		self.strategy = strategy
 		self.budget = budget
 		self.posMaxValue = position_max_value
+		self.allowed_stocks = allowed_stocks
 
 	def update(self):
 		if self.strategy is None:
