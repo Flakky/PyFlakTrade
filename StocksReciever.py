@@ -3,6 +3,7 @@ from alpha_vantage.timeseries import TimeSeries
 import yfinance
 import datetime
 import StockValue
+import typing
 
 stocks_cache = {}
 
@@ -33,19 +34,31 @@ def getCurrentValue(symbol: str) -> StockValue:
 	return stock_value
 
 
-def receiveStocks(symbol: str, interval=5) -> list[StockValue.StockValue]:
-	ts = TimeSeries(key='1X1VXIAYUFBBM00J', output_format='pandas')
-	data, meta_data = ts.get_intraday(symbol=symbol, interval=str(interval)+"min", outputsize='compact')
+def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
+	data = yfinance.download(
+		symbol,
+		start="2020-12-01",
+		end="2020-12-03",
+		interval="1m"
+	)
+	
+	stocks_array = []
+	
+	for date, row in data.iterrows():
 
-	data.rename(columns={
-		'1. open': 'open',
-		'2. high': 'high',
-		'3. low': 'low',
-		'4. close': 'close',
-		'5. volume': 'volume'
-	}, inplace=True)
+		stock_value = StockValue.StockValue(
+			symbol,
+			row["Close"],
+			datetime.datetime.fromtimestamp(date.timestamp()),
+			open_value=row["Open"],
+			time_start=datetime.datetime.fromtimestamp(date.timestamp()-60),
+			volume=row["Volume"],
+			low_value=row["Low"],
+			high_value=row["High"]
+		)
+		stocks_array.append(stock_value)
 
-	return data
+	return stocks_array
 
 
 def insert_to_cache(stock_value: StockValue.StockValue) -> bool:

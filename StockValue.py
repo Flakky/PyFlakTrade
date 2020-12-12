@@ -24,7 +24,7 @@ class StockValue:
 	def __str__(self):
 		return """StockValue for '{symbol}':
 	-Open: {open} - {open_time}
-	-Close: {color}{close}\033[0m - {close_time}
+	-Close: {color} {close} \033[0m - {close_time}
 	-High: {high}
 	-Low: {low}
 	-Volume: {vol}""".format(
@@ -37,5 +37,5 @@ class StockValue:
 			close_time=self.time_end,
 			open_time=self.time_start,
 			color="\033[92m" if self.close_value > self.open_value
-			else ("" if self.close_value == self.open_value else "\031[92m")
+			else ("" if self.close_value == self.open_value else "\033[91m")
 		)

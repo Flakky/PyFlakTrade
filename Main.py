@@ -2,6 +2,9 @@ import pandas
 import time
 import StocksReciever
 
-while True:
-	print(StocksReciever.getCurrentValue("AAPL"))
-	time.sleep(1)
+#while True:
+#	print(StocksReciever.getCurrentValue("AAPL"))
+#	time.sleep(1)
+
+data = StocksReciever.receiveStocks("AAPL")
+print(len(data))
