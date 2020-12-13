@@ -2,6 +2,8 @@ import pandas
 import time
 import StocksReciever
 import datetime
+import Trader
+import Strategy
 
 #while True:
 #	print(StocksReciever.getCurrentValue("AAPL"))
@@ -9,7 +11,10 @@ import datetime
 
 data = StocksReciever.receiveStocks("AAPL")
 
-period_data = StocksReciever.StockValue.get_values_from_list(data, datetime.datetime(2020,12,3), datetime.datetime(2020,12,4))
+period_data = StocksReciever.StockValue.get_values_from_list(data, datetime.datetime(2020,12,1), datetime.datetime(2020,12,5))
 
-for value in period_data:
-	print(value)
+trader = Trader.Trader(Strategy.Strategy(), 1000.0, 150.0, ["AAPL"])
+
+trader.enableBacktestMode(period_data)
+
+trader.start()

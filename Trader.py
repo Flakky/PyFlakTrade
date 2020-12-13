@@ -7,6 +7,15 @@ import StockValue
 import typing
 
 
+class BackTestMode:
+	trade_data: typing.List[StockValue.StockValue] = []
+	current_time: datetime.datetime = None
+
+	def __init__(self, trade_data: typing.List[StockValue.StockValue]):
+		self.trade_data = trade_data
+		self.current_time = trade_data[0].time_start+datetime.timedelta(hours=1)
+
+
 class Trader:
 	strategy: Strategy.Strategy = None
 	budget: float = 0.0
@@ -27,29 +36,40 @@ class Trader:
 		if self.strategy is None:
 			return
 
-		trade_data = self.recieveTradeData()
+		trade_data = self.receiveTradeData()
+		last_stock_value = trade_data[-1]
+		trade_time = last_stock_value.time_end
 
 		if self.openedPosition is not None:
 			if self.strategy.shouldClosePosition(trade_data, self.openedPosition):
-				self.closePosition()
+				self.closePosition(trade_time, last_stock_value.close_value)
 		else:
 			if self.strategy.shouldOpenPosition(trade_data):
-				open_value = trade_data[-1].value
+				open_value = last_stock_value.close_value
 				position = Position.Position(
-					0,
+					trade_time,
 					open_value,
 					1,
-					stopLoss=open_value - (open_value / 100),
-					takeProfit=open_value + (open_value / 100 * 2)
+					stop_loss=open_value - ((open_value / 100.0) * 0.5),
+					take_profit=open_value + ((open_value / 100.0) * 1.0)
 				)
 				self.openPosition(position)
+
+		if self.backtest is not None:
+			self.backtest.current_time += datetime.timedelta(minutes=1)
+			if self.backtest.current_time > self.backtest.trade_data[-1].time_end:
+				self.closePosition(trade_time, last_stock_value.close_value)
+				self.stop()
 
 	def openPosition(self, position: Position.Position):
 		self.openedPosition = position
 
 		self.budget -= position.open_value
 
-		print("Position open: {p}".format(p=str(position)))
+		print("""Position open: 
+		{pos}
+
+		Budget: {budget}""".format(pos=str(position), budget=self.budget))
 
 	def closePosition(self, close_time: datetime.datetime, value: float):
 		self.openedPosition.close(close_time, value)
@@ -57,32 +77,35 @@ class Trader:
 
 		self.budget += value
 
-		print("Position close: {p}".format(p=str(self.openedPosition)))
+		print("""Position open: 
+		{pos}
+		
+		Budget: {budget}""".format(pos=str(self.openedPosition), budget=self.budget))
 
 		self.openedPosition = None
 
-	def recieveTradeData(self) -> typing.List[StockValue.StockValue]:
+	def receiveTradeData(self) -> typing.List[StockValue.StockValue]:
 		if self.backtest is not None:
-#			return StockValue.get_values_from_list()
-		return trade_data
+			return StockValue.get_values_from_list(
+				self.backtest.trade_data,
+				self.backtest.current_time-datetime.timedelta(days=1),
+				self.backtest.current_time
+			)
+		else:
+			trade_data = []
+			return trade_data
 
 	def start(self):
 		self.tradeInProgress = True
 		while self.tradeInProgress:
 			self.update()
-			time.sleep(1)
+			if self.backtest is not None:
+				time.sleep(0.1)
 
 	def stop(self):
 		self.tradeInProgress = False
 
+		print("Trading stopped: {budget}".format(budget=self.budget))
+
 	def enableBacktestMode(self, test_trade_data: typing.List[StockValue.StockValue]):
 		self.backtest = BackTestMode(test_trade_data)
-
-
-class BackTestMode:
-	trade_data: typing.List[StockValue.StockValue]) = []
-	current_time: datetime.datetime = None
-	
-	def __init__(self, trade_data: typing.List[StockValue.StockValue])):
-		self.trade_data = trade_data
-		self.current_time = trade_data[0].time_start
