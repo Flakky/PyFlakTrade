@@ -33,7 +33,7 @@ class Trader:
 		self.allowed_stocks = allowed_stocks
 
 	def update(self):
-		if self.strategy is None:
+		if not self.tradeInProgress or self.strategy is None:
 			return
 
 		trade_data = self.receiveTradeData()
@@ -95,12 +95,14 @@ class Trader:
 			trade_data = []
 			return trade_data
 
-	def start(self):
+	def start(self, manual_update: bool = False):
 		self.tradeInProgress = True
-		while self.tradeInProgress:
-			self.update()
-			if self.backtest is not None:
-				time.sleep(0.1)
+
+		if not manual_update:
+			while self.tradeInProgress:
+				self.update()
+				if self.backtest is not None:
+					time.sleep(0.1)
 
 	def stop(self):
 		self.tradeInProgress = False

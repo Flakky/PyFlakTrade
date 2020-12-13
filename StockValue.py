@@ -42,7 +42,7 @@ class StockValue:
 		)
 
 
-def get_values_from_list(values_list: typing.List[StockValue], start: datetime.datetime, end: datetime.datetime):
+def get_values_from_list(values_list: typing.List[StockValue], start: datetime.datetime, end: datetime.datetime) -> typing.List[StockValue]:
 	out_list = []
 	for i in range(len(values_list)):
 		value = values_list[i]
@@ -51,4 +51,20 @@ def get_values_from_list(values_list: typing.List[StockValue], start: datetime.d
 		if value.time_start >= start and value.time_end <= end:
 			out_list.append(value)
 			
+	return out_list
+
+
+def get_value_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> list[float]:
+	out_list = []
+	for value in values_list:
+		out_list.append(value.close_value if close else value.open_value)
+
+	return out_list
+
+
+def get_times_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> list[datetime.datetime]:
+	out_list = []
+	for value in values_list:
+		out_list.append(value.time_end if close else value.time_start)
+
 	return out_list
