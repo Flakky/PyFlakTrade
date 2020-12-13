@@ -4,6 +4,7 @@ import Position
 import Strategy
 import datetime
 import StockValue
+import typing
 
 
 class Trader:
@@ -14,7 +15,7 @@ class Trader:
 	openedPosition: Position.Position = None
 	closedPositions: list[Position.Position] = []
 	tradeInProgress: bool = False
-	backtest = {"testMode": False, "tradeData": [], "testCurrentTime": None}
+	backtest: BackTestMode = None
 
 	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks: list[str]):
 		self.strategy = strategy
@@ -73,6 +74,14 @@ class Trader:
 	def stop(self):
 		self.tradeInProgress = False
 
-	def enableBacktestMode(self, test_trade_data: list[StockValue.StockValue]):
-		self.backtest.testMode = True
-		self.backtest.tradeData = test_trade_data
+	def enableBacktestMode(self, test_trade_data: typing.List[StockValue.StockValue]):
+		self.backtest = BackTestMode(test_trade_data)
+
+
+class BackTestMode:
+	trade_data: typing.List[StockValue.StockValue]) = []
+	current_time: datetime.datetime = None
+	
+	def __init__(self, trade_data: typing.List[StockValue.StockValue])):
+		self.trade_data = trade_data
+		self.current_time = trade_data[0].time_start
