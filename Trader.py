@@ -61,15 +61,16 @@ class Trader:
 
 		self.openedPosition = None
 
-	def recieveTradeData(self):
-		trade_data = []
+	def recieveTradeData(self) -> typing.List[StockValue.StockValue]:
+		if self.backtest is not None:
+#			return StockValue.get_values_from_list()
 		return trade_data
 
 	def start(self):
 		self.tradeInProgress = True
 		while self.tradeInProgress:
 			self.update()
-			time.sleep(5)
+			time.sleep(1)
 
 	def stop(self):
 		self.tradeInProgress = False

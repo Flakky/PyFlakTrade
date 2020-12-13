@@ -38,7 +38,7 @@ def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 	data = yfinance.download(
 		symbol,
 		start="2020-12-01",
-		end="2020-12-03",
+		end="2020-12-07",
 		interval="1m"
 	)
 	
