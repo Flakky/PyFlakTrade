@@ -54,7 +54,7 @@ def get_values_from_list(values_list: typing.List[StockValue], start: datetime.d
 	return out_list
 
 
-def get_value_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> list[float]:
+def get_value_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> typing.List[float]:
 	out_list = []
 	for value in values_list:
 		out_list.append(value.close_value if close else value.open_value)
@@ -62,7 +62,7 @@ def get_value_array_from_stocks(values_list: typing.List[StockValue], close: boo
 	return out_list
 
 
-def get_times_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> list[datetime.datetime]:
+def get_times_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> typing.List[datetime.datetime]:
 	out_list = []
 	for value in values_list:
 		out_list.append(value.time_end if close else value.time_start)

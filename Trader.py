@@ -20,14 +20,16 @@ class Trader:
 	strategy: Strategy.Strategy = None
 	budget: float = 0.0
 	posMaxValue: float = 0.0
-	allowed_stocks: list[str] = []
+	allowed_stocks: typing.List[str] = []
 	openedPosition: Position.Position = None
-	closedPositions: list[Position.Position] = []
+	closedPositions: typing.List[Position.Position] = []
 	tradeInProgress: bool = False
 	backtest: BackTestMode = None
 
-	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks: list[str]):
+	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks: typing.List[str]):
 		self.strategy = strategy
+		self.strategy.set_trader(self)
+		
 		self.budget = budget
 		self.posMaxValue = position_max_value
 		self.allowed_stocks = allowed_stocks
