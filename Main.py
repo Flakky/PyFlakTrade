@@ -26,21 +26,35 @@ trader.enableBacktestMode(period_data)
 
 trader.start(True)
 
+fig, ax = plt.subplots()
+
 def anim(i):
+	trader.update()
+	
 	trade_values = StockValue.get_values_from_list(
 		trader.backtest.trade_data,
 		trader.backtest.current_time-datetime.timedelta(hours=1),
 		trader.backtest.current_time
 	)
-
+	pos_x = []
+	pos_y = []
+	
+	if trader.openedPosition is not None:
+		pos_x.append(trader.openedPosition.open_time)
+		pos_y.append(trader.openedPosition.open_value)
+		
+		if trader.openedPosition.closed:
+			pos_x.append(trader.openedPosition.close_time)
+			pos_y.append(trader.openedPosition.close_value)
+	
+	ax.scatter(pos_x, pos_y)
+	
 	x = StockValue.get_times_array_from_stocks(trade_values)
 	y = StockValue.get_value_array_from_stocks(trade_values)
 	plt.cla()
 
-	plt.plot(x, y)
-
-	trader.update()
+	ax.plot(x, y)
 
 
-ani = animation.FuncAnimation(plt.gcf(), anim, interval=30)
+ani = animation.FuncAnimation(fig, anim, interval=300)
 plt.show()
