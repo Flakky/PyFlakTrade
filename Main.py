@@ -24,6 +24,10 @@ trader = Trader.Trader(Strategy.Strategy(), 1000.0, 150.0, ["AAPL"])
 
 trader.enableBacktestMode(period_data)
 
+test_data = trader.receiveTradeData()
+for val in test_data:
+	print(val)
+
 trader.start(True)
 
 fig, ax = plt.subplots()
@@ -31,11 +35,7 @@ fig, ax = plt.subplots()
 def anim(i):
 	trader.update()
 	
-	trade_values = StockValue.get_values_from_list(
-		trader.backtest.trade_data,
-		trader.backtest.current_time-datetime.timedelta(hours=1),
-		trader.backtest.current_time
-	)
+	trade_values = trader.receiveTradeData()[max(trader.backtest.current_index-30, 0):trader.backtest.current_index]
 	pos_x = []
 	pos_y = []
 	
@@ -53,8 +53,7 @@ def anim(i):
 	y = StockValue.get_value_array_from_stocks(trade_values)
 	plt.cla()
 
-	ax.plot(x, y)
+	return ax.plot(x, y)
 
-
-ani = animation.FuncAnimation(fig, anim, interval=300)
+ani = animation.FuncAnimation(fig, anim, interval=30)
 plt.show()

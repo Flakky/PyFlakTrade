@@ -9,11 +9,10 @@ import typing
 
 class BackTestMode:
 	trade_data: typing.List[StockValue.StockValue] = []
-	current_time: datetime.datetime = None
+	current_index: int = 0
 
 	def __init__(self, trade_data: typing.List[StockValue.StockValue]):
 		self.trade_data = trade_data
-		self.current_time = trade_data[0].time_start+datetime.timedelta(hours=1)
 
 
 class Trader:
@@ -58,8 +57,8 @@ class Trader:
 				self.openPosition(position)
 
 		if self.backtest is not None:
-			self.backtest.current_time += datetime.timedelta(minutes=1)
-			if self.backtest.current_time > self.backtest.trade_data[-1].time_end:
+			self.backtest.current_index += 1
+			if self.backtest.current_index >= (len(self.backtest.trade_data)-1):
 				self.closePosition(trade_time, last_stock_value.close_value)
 				self.stop()
 
@@ -90,8 +89,8 @@ class Trader:
 		if self.backtest is not None:
 			return StockValue.get_values_from_list(
 				self.backtest.trade_data,
-				self.backtest.current_time-datetime.timedelta(days=1),
-				self.backtest.current_time
+				self.backtest.trade_data[0].time_start,
+				self.backtest.trade_data[self.backtest.current_index].time_end
 			)
 		else:
 			trade_data = []
