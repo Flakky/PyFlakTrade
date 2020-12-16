@@ -1,4 +1,5 @@
 import datetime
+import typing
 
 
 class Position:
@@ -23,7 +24,6 @@ class Position:
         self.close_value = value
         self.closed = True
 
-
     def __str__(self):
         return """Position:
     -Open: {open} - {open_time}
@@ -43,3 +43,13 @@ class Position:
             stop=self.stop_loss,
             take=self.take_profit
         )
+
+
+def get_positions_from_list(positions_list: typing.List[Position], start: datetime.datetime, end: datetime.datetime) -> \
+        typing.List[Position]:
+    out_list = []
+    for position in positions_list:
+        if position.open_time >= start and position.close_time <= end:
+            out_list.append(position)
+
+    return out_list
