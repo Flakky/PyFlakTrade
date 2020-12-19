@@ -4,8 +4,7 @@ import datetime
 import Trader
 import Strategy
 import TraderPlotting
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 
 #while True:
 #	print(StocksReciever.getCurrentValue("AAPL"))
@@ -27,23 +26,3 @@ trader.start(True)
 
 TraderPlotting.add_trader(trader)
 TraderPlotting.start_trading_plotting(True)
-
-# fig, ax = plt.subplots()
-#
-#
-# def anim(i):
-# 	print("test")
-#
-# 	x = [0,1,2,3,4]
-# 	y = [1,2,5,7,2]
-#
-# #	plt.cla()
-#
-# 	ax.plot(x, y)
-#
-#
-# print("Start anim")
-#
-#
-# ani = animation.FuncAnimation(fig, anim, interval=300)
-# plt.show()
