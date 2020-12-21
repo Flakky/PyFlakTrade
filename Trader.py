@@ -1,7 +1,7 @@
 import time
 import StocksReciever
 import Position
-import Strategy
+import Strategies.Strategy as Strategy
 import datetime
 import StockValue
 import typing

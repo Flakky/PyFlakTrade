@@ -5,7 +5,7 @@ import typing
 
 class Strategy:
 	trader = None #TODO: declare a type of Trader
-	
+
 	def set_trader(self, trader):
 		self.trader = trader
 
