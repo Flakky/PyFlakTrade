@@ -18,6 +18,9 @@ period_data = StocksReciever.StockValue.get_values_from_list(
 	datetime.datetime(2020, 12, 5)
 )
 
+dataframe = StockValue.convert_list_to_dataframe(period_data)
+print(dataframe)
+
 trader = Trader.Trader(Strategy.Strategy(), 1000.0, 150.0, ["AAPL"])
 
 trader.enableBacktestMode(period_data)

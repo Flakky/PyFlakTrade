@@ -42,23 +42,7 @@ def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 		interval="1m"
 	)
 	
-	stocks_array = []
-	
-	for date, row in data.iterrows():
-
-		stock_value = StockValue.StockValue(
-			symbol,
-			row["Close"],
-			datetime.datetime.fromtimestamp(date.timestamp()),
-			open_value=row["Open"],
-			time_start=datetime.datetime.fromtimestamp(date.timestamp()-60),
-			volume=row["Volume"],
-			low_value=row["Low"],
-			high_value=row["High"]
-		)
-		stocks_array.append(stock_value)
-
-	return stocks_array
+	return StockValue.convert_dataframe_to_list(data, symbol)
 
 
 def insert_to_cache(stock_value: StockValue.StockValue) -> bool:
