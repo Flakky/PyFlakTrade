@@ -33,6 +33,9 @@ def animate(i):
 		plot_trade_data(trade_values)
 		plot_positions(closed_positions)
 		plot_positions([trader.openedPosition])
+		
+		if trader.strategy.plotter is not None:
+			trader.strategy.plotter.plot(ax, trader.strategy, trade_values)
 
 
 def plot_trade_data(trade_values):
