@@ -1,10 +1,16 @@
 import Position
 import StockValue
 import typing
+import matplotlib.axes
+
+
+class StrategyPlotter:
+	pass
 
 
 class Strategy:
 	trader = None #TODO: declare a type of Trader
+	plotter: StrategyPlotter.__class__ = StrategyPlotter
 
 	def set_trader(self, trader):
 		self.trader = trader
@@ -21,3 +27,10 @@ class Strategy:
 				return False
 		else:
 			return False
+
+
+class StrategyPlotter:
+
+	@classmethod
+	def plot(self, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
+		return
