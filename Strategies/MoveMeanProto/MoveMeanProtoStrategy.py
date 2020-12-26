@@ -7,13 +7,22 @@ import matplotlib.axes
 
 
 class MoveMeanProtoPlotter(Strategy.StrategyPlotter):
-	pass
+
+	@classmethod
+	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
+		close_values_series = pandas.Series(StockValue.get_array_from_stocks(trade_data, "close_value"))
+		moving_average = close_values_series.rolling(10)
+
+		x = StockValue.get_times_array_from_stocks(trade_data, True)
+
+		ax.plot(x, moving_average.mean().values)
+		return
 
 
 class StrategyMoveMeanProto(Strategy.Strategy):
 	pass
 	
-	plotter: Strategy.StrategyPlotter.__class__ = MoveMeanProtoPlotter
+	plotter = MoveMeanProtoPlotter
 
 	def __init__(self):
 		super(StrategyMoveMeanProto, self).__init__()
@@ -32,7 +41,7 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 
 			last_stock_value = trade_data[-1]
 
-			if last_stock_value.close_value < last_average_value:
+			if last_stock_value.close_value < last_average_value - (last_stock_value.close_value / 100 * 0.1):
 				return True
 			else:
 				return False
@@ -40,19 +49,3 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 	def shouldClosePosition(self, trade_data: typing.List[StockValue.StockValue], position: Position.Position) -> bool:
 		if super(StrategyMoveMeanProto, self).shouldClosePosition(trade_data, position):
 			return True
-
-
-class MoveMeanProtoPlotter(Strategy.StrategyPlotter):
-	
-	@classmethod
-	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
-		print("test")
-		close_values_series = pandas.Series(StockValue.get_array_from_stocks(trade_data, "close_value"))
-		moving_average = close_values_series.rolling(10)
-		
-		x = StockValue.get_times_array_from_stocks(trade_data, True)
-		
-		print(x)
-		
-		ax.plot(x, moving_average)
-		return

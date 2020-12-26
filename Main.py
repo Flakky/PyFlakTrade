@@ -11,6 +11,7 @@ import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 #	print(StocksReciever.getCurrentValue("AAPL"))
 #	time.sleep(1)
 
+
 data = StocksReciever.receiveStocks("AAPL")
 
 period_data = StocksReciever.StockValue.get_values_from_list(
@@ -32,3 +33,4 @@ trader.start(True)
 
 TraderPlotting.add_trader(trader)
 TraderPlotting.start_trading_plotting(True)
+

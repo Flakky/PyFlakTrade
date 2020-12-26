@@ -33,5 +33,4 @@ class StrategyPlotter:
 
 	@classmethod
 	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
-		print("t")
 		return
