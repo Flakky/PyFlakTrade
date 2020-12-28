@@ -10,15 +10,18 @@ class MoveMeanProtoPlotter(Strategy.StrategyPlotter):
 
 	@classmethod
 	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
+		plot_elems = []
+
 		close_values_series = pandas.Series(StockValue.get_array_from_stocks(trade_data, "close_value"))
 		moving_average = close_values_series.rolling(10)
 		moving_average_small = close_values_series.rolling(4)
 
 		x = StockValue.get_times_array_from_stocks(trade_data, True)
 
-		ax.plot(x, moving_average.mean().values)
-		ax.plot(x, moving_average_small.mean().values)
-		return
+		plot_elems += ax.plot(x, moving_average.mean().values)
+		plot_elems += ax.plot(x, moving_average_small.mean().values)
+
+		return plot_elems
 
 
 class StrategyMoveMeanProto(Strategy.Strategy):

@@ -6,14 +6,15 @@ import Position
 import StockValue
 import datetime
 
-fig, ax = plt.subplots()
+fig = plt.figure()
+ax = fig.add_subplot()
 traders = []
 update_traders = True
 
 def animate(i):
 	plt.cla()
 	
-	plot_elems = ()
+	plot_elems = []
 
 	for trader in traders:
 
@@ -32,13 +33,13 @@ def animate(i):
 
 		closed_positions = Position.get_positions_from_list(trader.closedPositions, draw_start_time, draw_end_time)
 
-		plot_elems += (plot_trade_data(trade_values), )
-		plot_positions(closed_positions)
-		plot_positions([trader.openedPosition])
+		plot_elems += plot_trade_data(trade_values)
+		plot_elems += plot_positions(closed_positions)
+		plot_elems += plot_positions([trader.openedPosition])
 		
 		if trader.strategy.plotter is not None:
-			trader.strategy.plotter.plot(ax, trader.strategy, trade_values)
-			
+			plot_elems += trader.strategy.plotter.plot(ax, trader.strategy, trade_values)
+
 	return plot_elems
 
 
@@ -50,7 +51,6 @@ def plot_trade_data(trade_values):
 
 
 def plot_positions(positions):
-	return
 	out_plot_elems = []
 	pos_x = []
 	pos_y = []
@@ -82,8 +82,8 @@ def plot_positions(positions):
 			))
 
 		out_plot_elems.append(ax.scatter(pos_x, pos_y, c=colors))
-	
-#	return out_plot_elems
+
+	return out_plot_elems
 
 def add_trader(trader: Trader.Trader):
 	traders.append(trader)
@@ -93,5 +93,5 @@ def start_trading_plotting(should_update_traders: bool):
 	global update_traders
 	update_traders = should_update_traders
 
-	ani = animation.FuncAnimation(fig, animate, interval=30, blit=True)
+	ani = animation.FuncAnimation(fig, animate, interval=1, blit=True)
 	plt.show()
