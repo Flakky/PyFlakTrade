@@ -12,7 +12,7 @@ import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 #	time.sleep(1)
 
 
-data = StocksReciever.receiveStocks("M")
+data = StocksReciever.receiveStocks("INTC")
 
 period_data = StocksReciever.StockValue.get_values_from_list(
 	data,
@@ -29,8 +29,8 @@ trader = Trader.Trader(strategy, 1000.0, 150.0, ["AAPL"])
 
 trader.enableBacktestMode(period_data)
 
-trader.start(True)
+trader.start(False)
 
-TraderPlotting.add_trader(trader)
-TraderPlotting.start_trading_plotting(True)
+#TraderPlotting.add_trader(trader)
+#TraderPlotting.start_trading_plotting(True)
 

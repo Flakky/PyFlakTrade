@@ -50,7 +50,7 @@ class Trader:
 				position = Position.Position(
 					trade_time,
 					open_value,
-					1,
+					self.budget // open_value,
 					stop_loss=open_value - ((open_value / 100.0) * 0.5)
 				)
 				self.openPosition(position)
@@ -64,7 +64,7 @@ class Trader:
 	def openPosition(self, position: Position.Position):
 		self.openedPosition = position
 
-		self.budget -= position.open_value
+		self.budget -= position.open_value * position.amount
 
 		print("""Position open: 
 		{pos}
@@ -75,7 +75,7 @@ class Trader:
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
 
-		self.budget += value
+		self.budget += value * self.openedPosition.amount
 
 		print("""Position open: 
 		{pos}
