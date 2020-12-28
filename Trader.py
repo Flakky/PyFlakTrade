@@ -51,8 +51,7 @@ class Trader:
 					trade_time,
 					open_value,
 					1,
-					stop_loss=open_value - ((open_value / 100.0) * 0.5),
-					take_profit=open_value + ((open_value / 100.0) * 1.0)
+					stop_loss=open_value - ((open_value / 100.0) * 0.5)
 				)
 				self.openPosition(position)
 

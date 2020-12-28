@@ -12,7 +12,7 @@ import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 #	time.sleep(1)
 
 
-data = StocksReciever.receiveStocks("AAPL")
+data = StocksReciever.receiveStocks("M")
 
 period_data = StocksReciever.StockValue.get_values_from_list(
 	data,
