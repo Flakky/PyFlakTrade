@@ -35,14 +35,39 @@ def getCurrentValue(symbol: str) -> StockValue:
 
 
 def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
+	out_stocks = []
+
+	print("Downloading stock...")
 	data = yfinance.download(
 		symbol,
 		start="2020-12-01",
 		end="2020-12-07",
 		interval="1m"
 	)
+
+	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
+
+	print("Downloading stock...")
+	data = yfinance.download(
+		symbol,
+		start="2020-12-08",
+		end="2020-12-15",
+		interval="1m"
+	)
+
+	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
+
+	print("Downloading stock...")
+	data = yfinance.download(
+		symbol,
+		start="2020-12-16",
+		end="2020-12-23",
+		interval="1m"
+	)
+
+	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
 	
-	return StockValue.convert_dataframe_to_list(data, symbol)
+	return out_stocks
 
 
 def insert_to_cache(stock_value: StockValue.StockValue) -> bool:

@@ -12,16 +12,13 @@ import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 #	time.sleep(1)
 
 
-data = StocksReciever.receiveStocks("INTC")
+data = StocksReciever.receiveStocks("M")
 
 period_data = StocksReciever.StockValue.get_values_from_list(
 	data,
 	datetime.datetime(2020, 12, 1),
-	datetime.datetime(2020, 12, 5)
+	datetime.datetime(2020, 12, 25)
 )
-
-dataframe = StockValue.convert_list_to_dataframe(period_data)
-print(dataframe)
 
 strategy = MoveMeanProtoStrategy.StrategyMoveMeanProto()
 
