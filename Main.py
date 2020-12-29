@@ -1,6 +1,7 @@
 import StocksReciever
 import StockValue
 import datetime
+import TradeSystem
 import Trader
 import Strategies.MoveMeanProto.MoveMeanProtoStrategy as MoveMeanProtoStrategy
 import Strategies.Strategy as Strategy
@@ -11,22 +12,14 @@ import matplotlib.pyplot # import it so PyDroid start programm in graphical mode
 #	print(StocksReciever.getCurrentValue("AAPL"))
 #	time.sleep(1)
 
+TradeSystem.init()
 
 data = StocksReciever.receiveStocks("AAL")
 
-period_data = StocksReciever.StockValue.get_values_from_list(
-	data,
-	datetime.datetime(2020, 12, 1),
-	datetime.datetime(2020, 12, 25)
-)
+TradeSystem.addTrader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
 
-strategy = MoveMeanProtoStrategy.StrategyMoveMeanProto()
-
-trader = Trader.Trader(strategy, 1000.0, 150.0, ["AAPL"])
-
-trader.enableBacktestMode(period_data)
-
-trader.start(False)
+TradeSystem.traders[0].enableBacktestMode(data)
+TradeSystem.traders[0].start(False)
 
 #TraderPlotting.add_trader(trader)
 #TraderPlotting.start_trading_plotting(True)
