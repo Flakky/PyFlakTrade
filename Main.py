@@ -16,7 +16,7 @@ TradeSystem.init()
 
 data = StocksReciever.receiveStocks("AAL")
 
-TradeSystem.addTrader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
+TradeSystem.add_trader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
 
 TradeSystem.traders[0].enableBacktestMode(data)
 TradeSystem.traders[0].start(False)

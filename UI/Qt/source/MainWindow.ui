@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>806</width>
-    <height>583</height>
+    <width>830</width>
+    <height>562</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,20 +34,13 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
+     <widget class="QTabWidget" name="traders_tab_widget">
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Tab 1</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Tab 2</string>
-       </attribute>
-      </widget>
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
      </widget>
     </item>
    </layout>
@@ -57,7 +50,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>806</width>
+     <width>830</width>
      <height>21</height>
     </rect>
    </property>
