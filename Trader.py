@@ -5,6 +5,9 @@ import Strategies.Strategy as Strategy
 import datetime
 import StockValue
 import typing
+from Observer import Observer
+import asyncio
+from threading import Thread
 
 
 class BackTestMode:
@@ -24,14 +27,20 @@ class Trader:
 	closedPositions: typing.List[Position.Position] = []
 	tradeInProgress: bool = False
 	backtest: BackTestMode = None
+	on_position_opened: Observer = None
+	on_position_closed: Observer = None
 
-	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float, allowed_stocks: typing.List[str]):
+	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float,
+				 allowed_stocks: typing.List[str]):
 		self.strategy = strategy
 		self.strategy.set_trader(self)
-		
+
 		self.budget = budget
 		self.posMaxValue = position_max_value
 		self.allowed_stocks = allowed_stocks
+
+		self.on_position_opened = Observer()
+		self.on_position_closed = Observer()
 
 	def update(self):
 		if not self.tradeInProgress or self.strategy is None:
@@ -57,7 +66,7 @@ class Trader:
 
 		if self.backtest is not None:
 			self.backtest.current_index += 1
-			if self.backtest.current_index >= (len(self.backtest.trade_data)-1):
+			if self.backtest.current_index >= (len(self.backtest.trade_data) - 1):
 				self.closePosition(trade_time, last_stock_value.close_value)
 				self.stop()
 
@@ -71,6 +80,8 @@ class Trader:
 
 		Budget: {budget}""".format(pos=str(position), budget=self.budget))
 
+		self.on_position_opened.exec(self, position)
+
 	def closePosition(self, close_time: datetime.datetime, value: float):
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
@@ -81,6 +92,8 @@ class Trader:
 		{pos}
 		
 		Budget: {budget}""".format(pos=str(self.openedPosition), budget=self.budget))
+
+		self.on_position_closed.exec(self, self.openedPosition)
 
 		self.openedPosition = None
 
@@ -101,8 +114,13 @@ class Trader:
 		if not manual_update:
 			while self.tradeInProgress:
 				self.update()
-				if self.backtest is not None:
-					time.sleep(0.1)
+
+	def start_async(self):
+		th = Thread(target=self.start)
+		th.start()
+
+	async def start_async_internal(self):
+		self.start(False)
 
 	def stop(self):
 		self.tradeInProgress = False

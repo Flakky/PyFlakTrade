@@ -12,7 +12,7 @@ def getCurrentValue(symbol: str) -> StockValue:
 	stock = yfinance.Ticker(symbol)
 
 	has_symbol_array = symbol in stocks_cache
-	
+
 	if has_symbol_array:
 		last_value = stocks_cache[symbol][-1]
 	else:
@@ -40,8 +40,8 @@ def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 	print("Downloading stock...")
 	data = yfinance.download(
 		symbol,
-		start="2020-12-01",
-		end="2020-12-07",
+		start="2020-12-02",
+		end="2020-12-08",
 		interval="1m"
 	)
 
@@ -50,8 +50,8 @@ def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 	print("Downloading stock...")
 	data = yfinance.download(
 		symbol,
-		start="2020-12-08",
-		end="2020-12-15",
+		start="2020-12-09",
+		end="2020-12-16",
 		interval="1m"
 	)
 
@@ -60,13 +60,13 @@ def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 	print("Downloading stock...")
 	data = yfinance.download(
 		symbol,
-		start="2020-12-16",
-		end="2020-12-23",
+		start="2020-12-17",
+		end="2020-12-24",
 		interval="1m"
 	)
 
 	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
-	
+
 	return out_stocks
 
 
@@ -93,4 +93,3 @@ def insert_to_cache(stock_value: StockValue.StockValue) -> bool:
 	else:
 		stocks_cache[symbol] = [stock_value]
 		return True
-

@@ -6,12 +6,11 @@ from Strategies.Strategy import Strategy
 
 class AddTraderDialog(QDialog):
 
-    def __init__(self):
-        super(AddTraderDialog, self).__init__()
-        uic.loadUi('UI/Qt/source/AddTraderDialog.ui', self)
+	def __init__(self):
+		super(AddTraderDialog, self).__init__()
+		uic.loadUi('UI/Qt/source/AddTraderDialog.ui', self)
 
-    def accept(self) -> None:
+	def accept(self) -> None:
+		TradeSystem.add_trader(Strategy)
 
-        TradeSystem.add_trader(Strategy)
-
-        super(AddTraderDialog, self).accept()
+		super(AddTraderDialog, self).accept()

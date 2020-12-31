@@ -43,20 +43,22 @@ class StockValue:
 		)
 
 
-def get_values_from_list(values_list: typing.List[StockValue], start: datetime.datetime, end: datetime.datetime) -> typing.List[StockValue]:
+def get_values_from_list(values_list: typing.List[StockValue], start: datetime.datetime, end: datetime.datetime) -> \
+typing.List[StockValue]:
 	out_list = []
 	for i in range(len(values_list)):
 		value = values_list[i]
-#		next_value = values_list[i+1] if i+1 < len(values_list) else None
-		
+		#		next_value = values_list[i+1] if i+1 < len(values_list) else None
+
 		if value.time_start >= start and value.time_end <= end:
 			out_list.append(value)
-			
+
 	return out_list
-	
+
+
 def get_array_from_stocks(values_list: typing.List[StockValue], values_type: str):
 	out = []
-	
+
 	for value in values_list:
 		if values_type == "close_value":
 			out.append(value.close_value)
@@ -75,8 +77,9 @@ def get_array_from_stocks(values_list: typing.List[StockValue], values_type: str
 		else:
 			# TODO: asset
 			out.append(None)
-	
+
 	return out
+
 
 def get_value_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> typing.List[float]:
 	out_list = []
@@ -86,24 +89,25 @@ def get_value_array_from_stocks(values_list: typing.List[StockValue], close: boo
 	return out_list
 
 
-def get_times_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> typing.List[datetime.datetime]:
+def get_times_array_from_stocks(values_list: typing.List[StockValue], close: bool = True) -> typing.List[
+	datetime.datetime]:
 	out_list = []
 	for value in values_list:
 		out_list.append(value.time_end if close else value.time_start)
 
 	return out_list
 
+
 def convert_dataframe_to_list(stock_data, symbol: str) -> typing.List[StockValue]:
 	stocks_array = []
-	
-	for date, row in stock_data.iterrows():
 
+	for date, row in stock_data.iterrows():
 		stock_value = StockValue(
 			symbol,
 			row["Close"],
 			datetime.datetime.fromtimestamp(date.timestamp()),
 			open_value=row["Open"],
-			time_start=datetime.datetime.fromtimestamp(date.timestamp()-60),
+			time_start=datetime.datetime.fromtimestamp(date.timestamp() - 60),
 			volume=row["Volume"],
 			low_value=row["Low"],
 			high_value=row["High"]
@@ -111,15 +115,17 @@ def convert_dataframe_to_list(stock_data, symbol: str) -> typing.List[StockValue
 		stocks_array.append(stock_value)
 
 	return stocks_array
-	
-def convert_list_to_dataframe(stock_data, value_types: tuple = ("close_value", "open_value", "high_value", "low_value", "volume")):
+
+
+def convert_list_to_dataframe(stock_data,
+							  value_types: tuple = ("close_value", "open_value", "high_value", "low_value", "volume")):
 	datetimes = get_times_array_from_stocks(stock_data)
-	
+
 	columns_map = {}
-	
+
 	for val in value_types:
 		columns_map[val] = get_array_from_stocks(stock_data, val)
-	
+
 	stock_dataframe = pandas.DataFrame(columns_map, index=datetimes)
-	
+
 	return stock_dataframe

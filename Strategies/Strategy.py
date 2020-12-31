@@ -10,13 +10,13 @@ class StrategyPlotter:
 
 
 class Strategy:
-	trader = None #TODO: declare a type of Trader
+	trader = None  # TODO: declare a type of Trader
 	plotter: StrategyPlotter.__class__ = StrategyPlotter
 	min_open_time: datetime.time = datetime.time(hour=8, minute=0)
 	max_open_time: datetime.time = datetime.time(hour=23, minute=58)
 	max_close_time: datetime.time = datetime.time(hour=23, minute=59)
-	position_time_limit: int = 60 # in minutes
-	
+	position_time_limit: int = 60  # in minutes
+
 	def __init__(self, **kwargs):
 		self.min_open_time = kwargs.get("min_open_time", self.min_open_time)
 		self.max_open_time = kwargs.get("max_open_time", self.max_open_time)
@@ -28,24 +28,24 @@ class Strategy:
 
 	def shouldOpenPosition(self, trade_data: typing.List[StockValue.StockValue]) -> bool:
 		last_value = trade_data[-1]
-		
+
 		if last_value.time_end.time() > self.max_open_time or last_value.time_end.time() < self.min_open_time:
-			return False 
-		
+			return False
+
 		return True
 
 	def shouldClosePosition(self, trade_data: typing.List[StockValue.StockValue], position: Position.Position) -> bool:
 		if position is not None:
 			last_value = trade_data[-1]
-			
+
 			if last_value.time_end.time() >= self.max_close_time:
 				return True
-				
+
 			position_minutes_delta = (last_value.time_end - position.open_time).total_seconds() / 60
-				
+
 			if position_minutes_delta >= self.position_time_limit:
 				return True
-				
+
 			if last_value.close_value <= position.stop_loss or last_value.close_value >= position.take_profit:
 				return True
 			else:

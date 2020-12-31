@@ -11,9 +11,10 @@ ax = fig.add_subplot()
 traders = []
 update_traders = True
 
+
 def animate(i):
 	plt.cla()
-	
+
 	plot_elems = []
 
 	for trader in traders:
@@ -26,7 +27,8 @@ def animate(i):
 		trade_values = trader.receiveTradeData()
 		last_value = trade_values[-1]
 
-		draw_start_time = datetime.datetime(last_value.time_end.year, last_value.time_end.month, last_value.time_end.day)
+		draw_start_time = datetime.datetime(last_value.time_end.year, last_value.time_end.month,
+											last_value.time_end.day)
 		draw_end_time = last_value.time_end
 
 		trade_values = StockValue.get_values_from_list(trade_values, draw_start_time, draw_end_time)
@@ -36,7 +38,7 @@ def animate(i):
 		plot_elems += plot_trade_data(trade_values)
 		plot_elems += plot_positions(closed_positions)
 		plot_elems += plot_positions([trader.openedPosition])
-		
+
 		if trader.strategy.plotter is not None:
 			plot_elems += trader.strategy.plotter.plot(ax, trader.strategy, trade_values)
 
@@ -69,7 +71,7 @@ def plot_positions(positions):
 		numpy.random.seed(seed)
 		color = (numpy.random.random(), numpy.random.random(), numpy.random.random())
 		colors.append(color)
-		
+
 		if position.closed:
 			pos_x.append(position.close_time)
 			pos_y.append(position.close_value)
@@ -84,6 +86,7 @@ def plot_positions(positions):
 		out_plot_elems.append(ax.scatter(pos_x, pos_y, c=colors))
 
 	return out_plot_elems
+
 
 def add_trader(trader: Trader.Trader):
 	traders.append(trader)
