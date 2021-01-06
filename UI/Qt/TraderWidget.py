@@ -6,8 +6,9 @@ from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QLabel
 import Trader
 import Position
+from UI.Qt.BacktestDialog import BacktestDialog
 import StocksReciever
-import asyncio
+import StockValue
 
 
 class TraderWidget(QWidget):
@@ -15,6 +16,7 @@ class TraderWidget(QWidget):
 	position_table: QTableWidget = None
 	backtest_button: QPushButton = None
 	budget: QLabel = None
+	backtest_dialog: BacktestDialog = None
 
 	def __init__(self, trader: Trader.Trader):
 		super(TraderWidget, self).__init__()
@@ -29,7 +31,7 @@ class TraderWidget(QWidget):
 		trader.on_position_opened.subscribe(self.add_position)
 		trader.on_position_closed.subscribe(self.update_closed_position)
 
-		self.button_backtest.clicked.connect(self.start_backtest)
+		self.button_backtest.clicked.connect(self.show_add_trader_dialog)
 
 	def add_position(self, trader: Trader.Trader, position: Position.Position):
 		row_index = self.position_table.rowCount()
@@ -53,9 +55,20 @@ class TraderWidget(QWidget):
 
 		self.budget.setText(str(trader.budget))
 
+	def show_add_trader_dialog(self):
+		self.backtest_dialog = BacktestDialog()
+		self.backtest_dialog.show()
+
+		self.backtest_dialog.accepted.connect(self.start_backtest)
+
 	def start_backtest(self):
-		data = StocksReciever.receiveStocks("AMD")
+		self.position_table.clear()
+
+		data = StocksReciever.receiveStocks(self.backtest_dialog.stock)
+
+		data = StockValue.get_values_from_list(data, self.backtest_dialog.start, self.backtest_dialog.end)
+
+		self.trader.budget = self.backtest_dialog.budget
 
 		self.trader.enableBacktestMode(data)
-
 		self.trader.start_async()

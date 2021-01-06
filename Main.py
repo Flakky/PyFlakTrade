@@ -14,12 +14,12 @@ import matplotlib.pyplot  # import it so PyDroid start programm in graphical mod
 
 TradeSystem.init()
 
-data = StocksReciever.receiveStocks("AAL")
-
-TradeSystem.add_trader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
-
-TradeSystem.traders[0].enableBacktestMode(data)
-TradeSystem.traders[0].start(False)
+# data = StocksReciever.receiveStocks("AAL")
+#
+# TradeSystem.add_trader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
+#
+# TradeSystem.traders[0].enableBacktestMode(data)
+# TradeSystem.traders[0].start(False)
 
 # TraderPlotting.add_trader(trader)
 # TraderPlotting.start_trading_plotting(True)

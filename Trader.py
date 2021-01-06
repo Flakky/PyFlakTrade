@@ -129,3 +129,5 @@ class Trader:
 
 	def enableBacktestMode(self, test_trade_data: typing.List[StockValue.StockValue]):
 		self.backtest = BackTestMode(test_trade_data)
+
+		self.closedPositions.clear()
