@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>356</width>
-    <height>297</height>
+    <height>255</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QDateTimeEdit" name="dateTimeEdit_Start"/>
+    <widget class="QDateTimeEdit" name="dateTimeEdit_Start">
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_2">

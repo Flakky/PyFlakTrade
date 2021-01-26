@@ -37,35 +37,22 @@ def getCurrentValue(symbol: str) -> StockValue:
 def receiveStocks(symbol: str) -> typing.List[StockValue.StockValue]:
 	out_stocks = []
 
-	print("Downloading stock...")
-	data = yfinance.download(
-		symbol,
-		start="2020-12-02",
-		end="2020-12-08",
-		interval="1m"
-	)
+	today = datetime.datetime.now()
 
-	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
+	for week in range(int(30/7)):
 
-	print("Downloading stock...")
-	data = yfinance.download(
-		symbol,
-		start="2020-12-09",
-		end="2020-12-16",
-		interval="1m"
-	)
+		start = today - datetime.timedelta(days=min((week+1) * 7, 30))
+		end = today - datetime.timedelta(days=(week * 7))
 
-	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
+		print("Downloading stock from {start} to {end}".format(start=str(start.date()), end=str(end.date())))
 
-	print("Downloading stock...")
-	data = yfinance.download(
-		symbol,
-		start="2020-12-17",
-		end="2020-12-24",
-		interval="1m"
-	)
-
-	out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
+		data = yfinance.download(
+			symbol,
+			start=str(start.date()),
+			end=str(end.date()),
+			interval="1m"
+		)
+		out_stocks.extend(StockValue.convert_dataframe_to_list(data, symbol))
 
 	return out_stocks
 

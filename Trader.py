@@ -6,7 +6,6 @@ import datetime
 import StockValue
 import typing
 from Observer import Observer
-import asyncio
 from threading import Thread
 
 
@@ -44,9 +43,15 @@ class Trader:
 
 	def update(self):
 		if not self.tradeInProgress or self.strategy is None:
+			self.stop()
 			return
 
 		trade_data = self.receiveTradeData()
+
+		if len(trade_data) == 0:
+			self.stop()
+			return
+
 		last_stock_value = trade_data[-1]
 		trade_time = last_stock_value.time_end
 

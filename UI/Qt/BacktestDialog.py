@@ -2,13 +2,13 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog, QLineEdit, QSpinBox, QDateTimeEdit
 import StocksReciever
 import StockValue
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class BacktestDialog(QDialog):
 	stock: str = ""
 	budget: int = 1000
-	start: datetime = datetime.now()
+	start: datetime = datetime.now() - timedelta(days=30)
 	end: datetime = datetime.now()
 	stock_textedit: QLineEdit
 	budget_spinbox: QSpinBox
