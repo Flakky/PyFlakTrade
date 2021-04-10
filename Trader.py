@@ -10,24 +10,13 @@ from TradeProvider import TradeProvider
 from threading import Thread
 from QuoteProvider import QuoteProvider
 
-
-class BackTestMode:
-	trade_data: typing.List[StockValue.StockValue] = []
-	current_index: int = 0
-
-	def __init__(self, trade_data: typing.List[StockValue.StockValue]):
-		self.trade_data = trade_data
-
-
 class Trader:
 	strategy: Strategy.Strategy = None
-	budget: float = 0.0
 	posMaxValue: float = 0.0
 	allowed_stocks: typing.List[str] = []
 	openedPosition: Position.Position = None
 	closedPositions: typing.List[Position.Position] = []
 	tradeInProgress: bool = False
-	backtest: BackTestMode = None
 	on_position_opened: Observer = Observer()
 	on_position_closed: Observer = Observer()
 	trade_provider: TradeProvider = None
@@ -40,7 +29,6 @@ class Trader:
 				position_max_value: float,
 				allowed_stocks: typing.List[str]):
 		self.strategy = strategy
-		self.strategy.set_trader(self)
 		self.trade_provider = trade_provider
 		self.quote_provider = quote_provider
 
@@ -70,7 +58,7 @@ class Trader:
 				position = Position.Position(
 					trade_time,
 					open_value,
-					self.budget // open_value,
+					self.trade_provider.read_budget() // open_value,
 					stop_loss=open_value - ((open_value / 100.0) * 0.5)
 				)
 				self.openPosition(position)
@@ -86,11 +74,6 @@ class Trader:
 		
 		self.trade_provider.open_position(position.ticker, position.amount)
 
-		print("""Position open: 
-		{pos}
-
-		Budget: {budget}""".format(pos=str(position), budget=self.budget))
-
 		self.on_position_opened.exec(self, position)
 
 	def closePosition(self, close_time: datetime.datetime, value: float):
@@ -101,11 +84,6 @@ class Trader:
 		
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
-
-		print("""Position open: 
-		{pos}
-		
-		Budget: {budget}""".format(pos=str(self.openedPosition), budget=self.budget))
 
 		self.on_position_closed.exec(self, self.openedPosition)
 

@@ -25,12 +25,8 @@ class MoveMeanProtoPlotter(Strategy.StrategyPlotter):
 
 
 class StrategyMoveMeanProto(Strategy.Strategy):
-	pass
 
 	plotter = MoveMeanProtoPlotter
-
-	def __init__(self):
-		super(StrategyMoveMeanProto, self).__init__()
 
 	def shouldOpenPosition(self, trade_data) -> bool:
 		if not super(StrategyMoveMeanProto, self).shouldOpenPosition(trade_data):

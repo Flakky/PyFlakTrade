@@ -10,7 +10,6 @@ class StrategyPlotter:
 
 
 class Strategy:
-	trader = None  # TODO: declare a type of Trader
 	plotter: StrategyPlotter.__class__ = StrategyPlotter
 	min_open_time: datetime.time = datetime.time(hour=8, minute=0)
 	max_open_time: datetime.time = datetime.time(hour=23, minute=58)
@@ -23,9 +22,7 @@ class Strategy:
 		self.max_close_time = kwargs.get("max_close_time", self.max_close_time)
 		self.position_time_limit = kwargs.get("position_time_limit", self.position_time_limit)
 
-	def set_trader(self, trader):
-		self.trader = trader
-
+	#TODO: return suggested position
 	def shouldOpenPosition(self, trade_data) -> bool:
 		last_value = trade_data[-1]
 
@@ -33,7 +30,8 @@ class Strategy:
 			return False
 
 		return True
-
+		
+	#TODO: return sell position
 	def shouldClosePosition(self, trade_data, position: Position.Position) -> bool:
 		if position is not None:
 			last_value = trade_data[-1]
