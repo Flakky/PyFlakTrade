@@ -6,7 +6,9 @@ import datetime
 import StockValue
 import typing
 from Observer import Observer
+from TradeProvider import TradeProvider
 from threading import Thread
+from QuoteProvider import QuoteProvider
 
 
 class BackTestMode:
@@ -26,20 +28,24 @@ class Trader:
 	closedPositions: typing.List[Position.Position] = []
 	tradeInProgress: bool = False
 	backtest: BackTestMode = None
-	on_position_opened: Observer = None
-	on_position_closed: Observer = None
+	on_position_opened: Observer = Observer()
+	on_position_closed: Observer = Observer()
+	trade_provider: TradeProvider = None
+	quote_provider: QuoteProvider = None
 
-	def __init__(self, strategy: Strategy.Strategy, budget: float, position_max_value: float,
-				 allowed_stocks: typing.List[str]):
+	def __init__(self, 
+				strategy: Strategy.Strategy, 
+				trade_provider: TradeProvider, 
+				quote_provider: QuoteProvider,
+				position_max_value: float,
+				allowed_stocks: typing.List[str]):
 		self.strategy = strategy
 		self.strategy.set_trader(self)
+		self.trade_provider = trade_provider
+		self.quote_provider = quote_provider
 
-		self.budget = budget
 		self.posMaxValue = position_max_value
 		self.allowed_stocks = allowed_stocks
-
-		self.on_position_opened = Observer()
-		self.on_position_closed = Observer()
 
 	def update(self):
 		if not self.tradeInProgress or self.strategy is None:
@@ -77,8 +83,8 @@ class Trader:
 
 	def openPosition(self, position: Position.Position):
 		self.openedPosition = position
-
-		self.budget -= position.open_value * position.amount
+		
+		self.trade_provider.open_position(position.ticker, position.amount)
 
 		print("""Position open: 
 		{pos}
@@ -88,10 +94,13 @@ class Trader:
 		self.on_position_opened.exec(self, position)
 
 	def closePosition(self, close_time: datetime.datetime, value: float):
+		self.trade_provider.close_position(
+			self.openedPosition.ticker,
+			self.openedPosition.amount
+		)
+		
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
-
-		self.budget += value * self.openedPosition.amount
 
 		print("""Position open: 
 		{pos}

@@ -26,7 +26,7 @@ class Strategy:
 	def set_trader(self, trader):
 		self.trader = trader
 
-	def shouldOpenPosition(self, trade_data: typing.List[StockValue.StockValue]) -> bool:
+	def shouldOpenPosition(self, trade_data) -> bool:
 		last_value = trade_data[-1]
 
 		if last_value.time_end.time() > self.max_open_time or last_value.time_end.time() < self.min_open_time:
@@ -34,7 +34,7 @@ class Strategy:
 
 		return True
 
-	def shouldClosePosition(self, trade_data: typing.List[StockValue.StockValue], position: Position.Position) -> bool:
+	def shouldClosePosition(self, trade_data, position: Position.Position) -> bool:
 		if position is not None:
 			last_value = trade_data[-1]
 
@@ -57,5 +57,6 @@ class Strategy:
 class StrategyPlotter:
 
 	@classmethod
-	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data: typing.List[StockValue.StockValue]):
+	def plot(cls, ax: matplotlib.axes.Axes, strategy: Strategy, trade_data):
 		return []
+	

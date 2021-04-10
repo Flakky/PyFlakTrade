@@ -3,6 +3,7 @@ import typing
 
 
 class Position:
+	ticker: str
 	open_time: datetime.datetime = datetime.datetime.min
 	close_time: datetime.datetime = datetime.datetime.min
 	open_value: float = 0.0
@@ -12,7 +13,8 @@ class Position:
 	take_profit: float = 99999999.0
 	closed: bool = False
 
-	def __init__(self, time: datetime.datetime, value: int, amount: int = 1, **kwargs):
+	def __init__(self, ticker: str, time: datetime.datetime, value: int, amount: int = 1, **kwargs):
+		self.ticker = ticker
 		self.open_time = time
 		self.open_value = value
 		self.amount = amount

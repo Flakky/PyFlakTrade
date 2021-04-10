@@ -32,7 +32,7 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 	def __init__(self):
 		super(StrategyMoveMeanProto, self).__init__()
 
-	def shouldOpenPosition(self, trade_data: typing.List[StockValue.StockValue]) -> bool:
+	def shouldOpenPosition(self, trade_data) -> bool:
 		if not super(StrategyMoveMeanProto, self).shouldOpenPosition(trade_data):
 			return False
 		else:
@@ -40,7 +40,7 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 			if len(trade_data) <= 1:
 				return False
 
-			close_values_series = pandas.Series(StockValue.get_array_from_stocks(trade_data, "close_value"))
+			close_values_series = pandas.Series(trade_data, "close_value")
 			moving_average = close_values_series.rolling(10)
 
 			last_average_value = moving_average.mean().values[-1]
@@ -60,11 +60,11 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 			else:
 				return False
 
-	def shouldClosePosition(self, trade_data: typing.List[StockValue.StockValue], position: Position.Position) -> bool:
+	def shouldClosePosition(self, trade_data, position: Position.Position) -> bool:
 		if super(StrategyMoveMeanProto, self).shouldClosePosition(trade_data, position):
 			return True
 
-		close_values_series = pandas.Series(StockValue.get_array_from_stocks(trade_data, "close_value"))
+		close_values_series = pandas.Series(trade_data, "close_value")
 		moving_average = close_values_series.rolling(10)
 		moving_average_small = close_values_series.rolling(4)
 
