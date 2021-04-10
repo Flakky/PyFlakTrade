@@ -3,7 +3,7 @@ import StockValue
 import typing
 import matplotlib.axes
 import datetime
-
+from QuoteRequest import QuoteRequest
 
 class StrategyPlotter:
 	pass
@@ -50,6 +50,10 @@ class Strategy:
 				return False
 		else:
 			return False
+			
+		def get_quotes_request() -> QuoteRequest:
+			return QuoteRequest()
+			
 
 
 class StrategyPlotter:
