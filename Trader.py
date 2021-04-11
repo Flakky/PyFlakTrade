@@ -6,7 +6,7 @@ import datetime
 import StockValue
 import typing
 from Observer import Observer
-from TradeProvider import TradeProvider
+from TradeProviders.TradeProvider import TradeProvider
 from threading import Thread
 from QuoteProvider import QuoteProvider
 
@@ -39,10 +39,12 @@ class Trader:
 		if not self.tradeInProgress or self.strategy is None:
 			self.stop()
 			return
+			
+		quote_request = self.strategy.get_quotes_requst()
 
-		trade_data = self.receiveTradeData()
+		trade_data = self.quote_provider.read_quotes(quote_request)
 
-		if len(trade_data) == 0:
+		if len(trade_data.index) == 0:
 			self.stop()
 			return
 
@@ -62,12 +64,6 @@ class Trader:
 					stop_loss=open_value - ((open_value / 100.0) * 0.5)
 				)
 				self.openPosition(position)
-
-		if self.backtest is not None:
-			self.backtest.current_index += 1
-			if self.backtest.current_index >= (len(self.backtest.trade_data) - 1):
-				self.closePosition(trade_time, last_stock_value.close_value)
-				self.stop()
 
 	def openPosition(self, position: Position.Position):
 		self.openedPosition = position
