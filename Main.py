@@ -1,25 +1,28 @@
-import StocksReciever
-import StockValue
-import datetime
 import TradeSystem
-import Trader
-import Strategies.MoveMeanProto.MoveMeanProtoStrategy as MoveMeanProtoStrategy
-import Strategies.Strategy as Strategy
-import TraderPlotting
-import matplotlib.pyplot  # import it so PyDroid start programm in graphical mode
-
-# while True:
-#	print(StocksReciever.getCurrentValue("AAPL"))
-#	time.sleep(1)
+from Trader import Trader
+from TradeProviders.TradeProvider_Test import TradeProviderTest
+from QuoteProviders.QuoteProvider_YFinance import QuoteProviderYFinance
+from Strategies.MoveMeanProto.MoveMeanProtoStrategy import StrategyMoveMeanProto
+from Strategies.Strategy import Backtest
+# import matplotlib.pyplot  # import it so PyDroid start programm in graphical mode
 
 TradeSystem.init()
 
-# data = StocksReciever.receiveStocks("AAL")
-#
-# TradeSystem.add_trader(MoveMeanProtoStrategy.StrategyMoveMeanProto)
-#
-# TradeSystem.traders[0].enableBacktestMode(data)
-# TradeSystem.traders[0].start(False)
+backtest = Backtest()
+strategy = StrategyMoveMeanProto(
+	backtest=backtest
+)
+trade_provider = TradeProviderTest()
+quote_provider = QuoteProviderYFinance()
 
-# TraderPlotting.add_trader(trader)
-# TraderPlotting.start_trading_plotting(True)
+trader = Trader(
+	strategy,
+	trade_provider,
+	quote_provider,
+	999999.0,
+	["AAPL"]
+)
+
+TradeSystem.add_trader(trader)
+
+trader.start()

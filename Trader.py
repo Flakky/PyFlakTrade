@@ -6,9 +6,10 @@ import datetime
 import StockValue
 import typing
 from Observer import Observer
+from QuoteRequest import QuoteRequest
 from TradeProviders.TradeProvider import TradeProvider
 from threading import Thread
-from QuoteProvider import QuoteProvider
+from QuoteProviders.QuoteProvider import QuoteProvider
 
 class Trader:
 	strategy: Strategy.Strategy = None
@@ -35,12 +36,13 @@ class Trader:
 		self.posMaxValue = position_max_value
 		self.allowed_stocks = allowed_stocks
 
-	def update(self):
+	def update_ticker(self, ticker: str):
 		if not self.tradeInProgress or self.strategy is None:
 			self.stop()
 			return
 			
 		quote_request = self.strategy.get_quotes_requst()
+		quote_request.ticker = ticker
 
 		trade_data = self.quote_provider.read_quotes(quote_request)
 
@@ -48,15 +50,15 @@ class Trader:
 			self.stop()
 			return
 
-		last_stock_value = trade_data[-1]
-		trade_time = last_stock_value.time_end
+		last_stock_value = trade_data.iloc[-1]
+		trade_time = last_stock_value.index
 
 		if self.openedPosition is not None:
 			if self.strategy.shouldClosePosition(trade_data, self.openedPosition):
-				self.closePosition(trade_time, last_stock_value.close_value)
+				self.closePosition(trade_time, last_stock_value["Close"])
 		else:
 			if self.strategy.shouldOpenPosition(trade_data):
-				open_value = last_stock_value.close_value
+				open_value = last_stock_value["Close"]
 				position = Position.Position(
 					trade_time,
 					open_value,
@@ -68,15 +70,12 @@ class Trader:
 	def openPosition(self, position: Position.Position):
 		self.openedPosition = position
 		
-		self.trade_provider.open_position(position.ticker, position.amount)
+		self.trade_provider.open_position(position)
 
 		self.on_position_opened.exec(self, position)
 
 	def closePosition(self, close_time: datetime.datetime, value: float):
-		self.trade_provider.close_position(
-			self.openedPosition.ticker,
-			self.openedPosition.amount
-		)
+		self.trade_provider.close_position(self.openedPosition)
 		
 		self.openedPosition.close(close_time, value)
 		self.closedPositions.append(self.openedPosition)
@@ -84,17 +83,10 @@ class Trader:
 		self.on_position_closed.exec(self, self.openedPosition)
 
 		self.openedPosition = None
-
-	def receiveTradeData(self) -> typing.List[StockValue.StockValue]:
-		if self.backtest is not None:
-			return StockValue.get_values_from_list(
-				self.backtest.trade_data,
-				self.backtest.trade_data[0].time_start,
-				self.backtest.trade_data[self.backtest.current_index].time_end
-			)
-		else:
-			trade_data = []
-			return trade_data
+		
+	def update(self):
+		for ticker in self.allowed_stocks:
+					self.update_ticker(ticker)
 
 	def start(self, manual_update: bool = False):
 		self.tradeInProgress = True
@@ -113,9 +105,5 @@ class Trader:
 	def stop(self):
 		self.tradeInProgress = False
 
-		print("Trading stopped: {budget}".format(budget=self.budget))
+		print("Trading stopped")
 
-	def enableBacktestMode(self, test_trade_data: typing.List[StockValue.StockValue]):
-		self.backtest = BackTestMode(test_trade_data)
-
-		self.closedPositions.clear()
