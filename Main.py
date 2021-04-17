@@ -1,10 +1,10 @@
 import TradeSystem
 from Trader import Trader
 from TradeProviders.TradeProvider_Test import TradeProviderTest
-from QuoteProviders.QuoteProvider_YFinance import QuoteProviderYFinance
+from QuoteProviders.QuoteProvider_Generator import QuoteProviderGenerator
 from Strategies.MoveMeanProto.MoveMeanProtoStrategy import StrategyMoveMeanProto
 from Strategies.Strategy import Backtest
-# import matplotlib.pyplot  # import it so PyDroid start programm in graphical mode
+from datetime import  datetime, timedelta
 
 TradeSystem.init()
 
@@ -13,7 +13,10 @@ strategy = StrategyMoveMeanProto(
 	backtest=backtest
 )
 trade_provider = TradeProviderTest()
-quote_provider = QuoteProviderYFinance()
+quote_provider = QuoteProviderGenerator(
+	start = datetime.now() - timedelta(days=7),
+	end = datetime.now()
+)
 
 trader = Trader(
 	strategy,

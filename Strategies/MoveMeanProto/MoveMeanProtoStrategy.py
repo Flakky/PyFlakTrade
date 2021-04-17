@@ -51,3 +51,5 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 
 		if last_value.close_value > last_average_value and last_small_average_value < prev_small_average_value:
 			return True
+			
+		pass

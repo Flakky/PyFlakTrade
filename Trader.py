@@ -41,12 +41,13 @@ class Trader:
 			self.stop()
 			return
 			
-		quote_request = self.strategy.get_quotes_requst()
+		quote_request = self.strategy.get_quotes_request()
 		quote_request.ticker = ticker
 
 		trade_data = self.quote_provider.read_quotes(quote_request)
 
 		if len(trade_data.index) == 0:
+			print("No more trade data")
 			self.stop()
 			return
 

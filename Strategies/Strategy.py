@@ -7,12 +7,13 @@ from pandas import DataFrame
 
 	
 class Backtest:
-	start: datetime = None
-	end: datetime = None
-	current_datetime: datetime = None
+	start: datetime = datetime.now() - timedelta(days=7)
+	end: datetime = datetime.now()
+	current_datetime: datetime = datetime.now() - timedelta(days=7)
 
 
 class Strategy:
+	# move min/max times to specific strategies
 	min_open_time: time = time(hour=8, minute=0)
 	max_open_time: time = time(hour=23, minute=58)
 	max_close_time: time = time(hour=23, minute=59)
