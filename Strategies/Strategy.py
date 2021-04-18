@@ -18,7 +18,7 @@ class Strategy:
 	max_open_time: time = time(hour=23, minute=58)
 	max_close_time: time = time(hour=23, minute=59)
 	position_time_limit: int = 60  # in minutes
-	update_period: int = 5 # in seconds
+	update_period: timedelta = timedelta(seconds=5)
 	backtest: Backtest = None
 
 	def __init__(self, **kwargs):
@@ -42,17 +42,18 @@ class Strategy:
 	#TODO: return sell position
 	def shouldClosePosition(self, trade_data: DataFrame, position: Position.Position) -> bool:
 		if position is not None:
-			last_value = trade_data.iloc[-1]
+			last_data = trade_data.iloc[-1]
+			last_time = last_data.name
 
-			if last_value.index.time() >= self.max_close_time:
+			if last_time.time() >= self.max_close_time:
 				return True
 
-			position_minutes_delta = (last_value.index.time() - position.open_time).total_seconds() / 60
+			position_minutes_delta = (last_time.time() - position.open_time).total_seconds() / 60
 
 			if position_minutes_delta >= self.position_time_limit:
 				return True
 
-			if last_value.close_value <= position.stop_loss or last_value.close_value >= position.take_profit:
+			if last_data["Close"] <= position.stop_loss or last_data["Close"] >= position.take_profit:
 				return True
 			else:
 				return False
@@ -68,7 +69,16 @@ class Strategy:
 			self.update_period
 		)
 				
-		if self.backtest is not None:				
-			self.backtest.current_datetime += timedelta(seconds=self.update_period)
+		if self.backtest is not None:
+			new_date: datetime = self.backtest.current_datetime + self.update_period
+
+			if new_date.hour > 17:  # next day if market is closed for today
+				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1, hours=9)
+			if new_date.hour < 9:   # to market open if it is not opened yet this day
+				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(hours=9)
+			if new_date.isoweekday() > 5:  # to monday if weekend
+				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=8-new_date.isoweekday(), hours=9)
+
+			self.backtest.current_datetime = new_date
 				
 		return request
