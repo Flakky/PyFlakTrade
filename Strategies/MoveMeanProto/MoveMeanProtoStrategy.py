@@ -28,9 +28,10 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 			if last_average_value > prev_average_value:
 				return False
 
-			last_stock_value = trade_data[-1]
+			last_stock = trade_data.iloc[-1]
+			last_stock_value = last_stock["Close"]
 
-			if last_stock_value.close_value < last_average_value - (last_stock_value.close_value / 100 * 0.1):
+			if last_stock_value < last_average_value - (last_stock_value / 100 * 0.1):
 				return True
 			else:
 				return False
@@ -47,9 +48,8 @@ class StrategyMoveMeanProto(Strategy.Strategy):
 		last_small_average_value = moving_average_small.mean().values[-1]
 		prev_small_average_value = moving_average_small.mean().values[-2]
 
-		last_value = trade_data[-1]
+		last_stock = trade_data.iloc[-1]
+		last_stock_value = last_stock["Close"]
 
-		if last_value.close_value > last_average_value and last_small_average_value < prev_small_average_value:
+		if last_stock_value > last_average_value and last_small_average_value < prev_small_average_value:
 			return True
-			
-		pass

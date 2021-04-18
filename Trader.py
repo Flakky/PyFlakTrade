@@ -52,7 +52,8 @@ class Trader:
 			return
 
 		last_stock_value = trade_data.iloc[-1]
-		trade_time = last_stock_value.index
+		trade_time = last_stock_value.name
+		print(last_stock_value)
 
 		if self.openedPosition is not None:
 			if self.strategy.shouldClosePosition(trade_data, self.openedPosition):

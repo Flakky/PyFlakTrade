@@ -14,8 +14,9 @@ strategy = StrategyMoveMeanProto(
 )
 trade_provider = TradeProviderTest()
 quote_provider = QuoteProviderGenerator(
-	start = datetime.now() - timedelta(days=7),
-	end = datetime.now()
+	datetime.now() - timedelta(days=20),
+	datetime.now(),
+	timedelta(seconds=5)
 )
 
 trader = Trader(

@@ -31,9 +31,10 @@ class Strategy:
 
 	#TODO: return suggested position
 	def shouldOpenPosition(self, trade_data: DataFrame) -> bool:
-		last_value = trade_data.iloc[-1]
+		last_data = trade_data.iloc[-1]
+		last_time = last_data.name
 
-		if last_value.time_end.time() > self.max_open_time or last_value.time_end.time() < self.min_open_time:
+		if last_time.time() > self.max_open_time or last_time.time() < self.min_open_time:
 			return False
 
 		return True
@@ -59,12 +60,15 @@ class Strategy:
 			return False
 			
 	def get_quotes_request(self) -> QuoteRequest:
-		if self.backtest is not None:
-			return QuoteRequest(
-				"",
-				self.backtest.current_datetime - timedelta(days=7),
-				self.backtest.current_datetime,
-				self.update_period
-				)
+		
+		request = QuoteRequest(
+			"",
+			self.backtest.current_datetime - timedelta(days=7),
+			self.backtest.current_datetime,
+			self.update_period
+		)
 				
-		return QuoteRequest()
+		if self.backtest is not None:				
+			self.backtest.current_datetime += timedelta(seconds=self.update_period)
+				
+		return request
