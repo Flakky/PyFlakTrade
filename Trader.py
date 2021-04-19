@@ -1,23 +1,19 @@
-import sys
-import time
-import StocksReciever
 import Position
 import Strategies.Strategy as Strategy
 import datetime
-import StockValue
-import typing
+from typing import List, Dict
 from Observer import Observer
-from QuoteRequest import QuoteRequest
 from TradeProviders.TradeProvider import TradeProvider
 from threading import Thread
 from QuoteProviders.QuoteProvider import QuoteProvider
 
+
 class Trader:
 	strategy: Strategy.Strategy = None
 	posMaxValue: float = 0.0
-	allowed_stocks: typing.List[str] = []
-	openedPosition: Position.Position = None
-	closedPositions: typing.List[Position.Position] = []
+	allowed_stocks: List[str] = []
+	openedPositions: Dict[str, Position.Position] = {}
+	closedPositions: List[Position.Position] = []
 	tradeInProgress: bool = False
 	on_position_opened: Observer = Observer()
 	on_position_closed: Observer = Observer()
@@ -25,11 +21,11 @@ class Trader:
 	quote_provider: QuoteProvider = None
 
 	def __init__(self,
-				strategy: Strategy.Strategy,
-				trade_provider: TradeProvider,
-				quote_provider: QuoteProvider,
-				position_max_value: float,
-				allowed_stocks: typing.List[str]):
+			strategy: Strategy.Strategy,
+			trade_provider: TradeProvider,
+			quote_provider: QuoteProvider,
+			position_max_value: float,
+			allowed_stocks: List[str]):
 		self.strategy = strategy
 		self.trade_provider = trade_provider
 		self.quote_provider = quote_provider
@@ -45,7 +41,7 @@ class Trader:
 		quote_request = self.strategy.get_quotes_request()
 		quote_request.ticker = ticker
 
-		print(""" Date: {date}""".format(date=quote_request.end), end='\r')
+		print("""{ticker} Date: {date}""".format(ticker=ticker, date=quote_request.end), end='\r')
 
 		trade_data = self.quote_provider.read_quotes(quote_request)
 
@@ -56,42 +52,44 @@ class Trader:
 
 		last_stock_value = trade_data.iloc[-1]
 		trade_time = last_stock_value.name
-#		print(last_stock_value)
+		# print(last_stock_value)
 
-		if self.openedPosition is not None:
-			if self.strategy.shouldClosePosition(trade_data, self.openedPosition):
-				self.closePosition(trade_time, last_stock_value["Close"])
+		if self.openedPositions.get(ticker) is not None:
+			if self.strategy.shouldClosePosition(trade_data, self.openedPositions[ticker]):
+				self.close_position(ticker, trade_time, last_stock_value["Close"])
 		else:
 			if self.strategy.shouldOpenPosition(trade_data):
 				open_value = last_stock_value["Close"]
 				position = Position.Position(
+					ticker,
 					trade_time,
 					open_value,
 					self.trade_provider.read_budget() // open_value,
 					stop_loss=open_value - ((open_value / 100.0) * 0.5)
 				)
-				self.openPosition(position)
+				self.open_position(position)
 
-	def openPosition(self, position: Position.Position):
-		self.openedPosition = position
+	def open_position(self, position: Position.Position):
+		self.openedPositions[position.ticker] = position
 
 		self.trade_provider.open_position(position)
 
 		self.on_position_opened.exec(self, position)
 
-	def closePosition(self, close_time: datetime.datetime, value: float):
-		self.trade_provider.close_position(self.openedPosition)
+	def close_position(self, ticker: str, close_time: datetime.datetime, value: float):
+		position = self.openedPositions.pop(ticker)
 
-		self.openedPosition.close(close_time, value)
-		self.closedPositions.append(self.openedPosition)
+		position.close(close_time, value)
 
-		self.on_position_closed.exec(self, self.openedPosition)
+		self.trade_provider.close_position(position)
 
-		self.openedPosition = None
+		self.closedPositions.append(position)
+
+		self.on_position_closed.exec(self, position)
 
 	def update(self):
 		for ticker in self.allowed_stocks:
-					self.update_ticker(ticker)
+			self.update_ticker(ticker)
 
 	def start(self, manual_update: bool = False):
 		self.tradeInProgress = True
@@ -111,4 +109,3 @@ class Trader:
 		self.tradeInProgress = False
 
 		print("Trading stopped")
-

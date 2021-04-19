@@ -8,15 +8,18 @@ from datetime import  datetime, timedelta
 
 TradeSystem.init()
 
+tickers = ["AAPL", "AMD", "M"]
+
 backtest = Backtest()
 strategy = StrategyMoveMeanProto(
 	backtest=backtest
 )
-trade_provider = TradeProviderTest()
+trade_provider = TradeProviderTest(1000)
 quote_provider = QuoteProviderGenerator(
 	datetime.now() - timedelta(days=20),
 	datetime.now(),
-	timedelta(seconds=5)
+	timedelta(seconds=5),
+	tickers
 )
 
 trader = Trader(
@@ -24,7 +27,7 @@ trader = Trader(
 	trade_provider,
 	quote_provider,
 	999999.0,
-	["AAPL"]
+	tickers
 )
 
 TradeSystem.add_trader(trader)

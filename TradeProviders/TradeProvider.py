@@ -1,6 +1,7 @@
 from Position import Position
 from Observer import Observer
 
+
 class TradeProvider:
 	budget: float = 0.0
 	on_position_opened: Observer = Observer()
@@ -17,7 +18,7 @@ class TradeProvider:
 		return
 		
 	def close_position(self, position: Position):
-		print("""Position open: 
+		print("""Position close: 
 		{pos}
 		
 		Budget: {budget}""".format(pos=str(position), budget=self.budget))
@@ -28,4 +29,3 @@ class TradeProvider:
 		
 	def read_budget(self) -> float:
 		return self.budget
-		

@@ -1,7 +1,11 @@
 from TradeProviders.TradeProvider import TradeProvider
 from Position import Position
 
+
 class TradeProviderTest(TradeProvider):
+
+	def __init__(self, budget: float):
+		self.budget = budget
 	
 	def open_position(self, position: Position):
 		self.budget -= position.amount * position.open_value

@@ -48,7 +48,7 @@ class Strategy:
 			if last_time.time() >= self.max_close_time:
 				return True
 
-			position_minutes_delta = (last_time.time() - position.open_time).total_seconds() / 60
+			position_minutes_delta = (last_time - position.open_time).total_seconds() / 60
 
 			if position_minutes_delta >= self.position_time_limit:
 				return True
