@@ -38,13 +38,11 @@ class QuoteProviderYFinance(QuoteProvider):
 					ticker_stocks = stocks_data
 				else:
 					ticker_stocks.append(stocks_data)
-					
+
 			ticker_stocks = ticker_stocks.tz_convert(None)
-					
-			print(ticker_stocks.index)
-			print(datetime(year=2021, month=4, day=3, hour=5))
-			
-			self.quotes[ticker] = stocks_data
+			ticker_stocks = ticker_stocks.tz_localize(None)
+
+			self.quotes[ticker] = ticker_stocks
 		
 	
 	def read_quotes(self, request: QuoteRequest) -> DataFrame:

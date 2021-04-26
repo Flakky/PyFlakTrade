@@ -5,7 +5,7 @@ from QuoteProviders.QuoteProvider_Generator import QuoteProviderGenerator
 from QuoteProviders.QuoteProvider_YFinance import QuoteProviderYFinance
 from Strategies.MoveMeanProto.MoveMeanProtoStrategy import StrategyMoveMeanProto
 from Strategies.Strategy import Backtest
-from datetime import  datetime, timedelta
+from datetime import datetime, timedelta
 
 
 TradeSystem.init()
@@ -19,12 +19,12 @@ strategy = StrategyMoveMeanProto(
 )
 trade_provider = TradeProviderTest(1000)
 
-#quote_provider = QuoteProviderGenerator(
-#	datetime.now() - timedelta(days=20),
-#	datetime.now(),
-#	timedelta(minutes=1),
-#	tickers
-#)
+# quote_provider = QuoteProviderGenerator(
+# 	datetime.now() - timedelta(days=20),
+# 	datetime.now(),
+# 	timedelta(minutes=1),
+# 	tickers
+# )
 
 quote_provider = QuoteProviderYFinance(tickers)
 

@@ -1,5 +1,4 @@
 import pandas
-from alpha_vantage.timeseries import TimeSeries
 import yfinance
 import datetime
 import StockValue
