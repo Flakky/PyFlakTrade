@@ -11,7 +11,7 @@ ax = fig.add_subplot()
 traders = []
 update_traders = True
 
-
+# TODO Remove plotting. We will display in another module or app
 def animate(i):
 	plt.cla()
 

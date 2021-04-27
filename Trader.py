@@ -13,7 +13,7 @@ class Trader:
 	posMaxValue: float = 0.0
 	allowed_stocks: List[str] = []
 	openedPositions: Dict[str, Position.Position] = {}
-	closedPositions: List[Position.Position] = []
+	closedPositions: List[Position.Position] = [] #TODO DataFrame
 	tradeInProgress: bool = False
 	on_position_opened: Observer = Observer()
 	on_position_closed: Observer = Observer()
@@ -41,13 +41,12 @@ class Trader:
 		quote_request = self.strategy.get_quotes_request()
 		quote_request.ticker = ticker
 
-		print("""Date: {start} - {end} - {ticker}""".format(ticker=ticker, start=quote_request.start, end=quote_request.end))
+#		print("""Date: {start} - {end} - {ticker}""".format(ticker=ticker, start=quote_request.start, end=quote_request.end))
 
 		trade_data = self.quote_provider.read_quotes(quote_request)
 
 		if len(trade_data.index) == 0:
-			print("No more trade data")
-			self.stop()
+#			print("No trade data for ticker")
 			return
 
 		last_stock_value = trade_data.iloc[-1]
@@ -59,15 +58,18 @@ class Trader:
 				self.close_position(ticker, trade_time, last_stock_value["Close"])
 		else:
 			if self.strategy.shouldOpenPosition(trade_data):
-				open_value = last_stock_value["Close"]
-				position = Position.Position(
-					ticker,
-					trade_time,
-					open_value,
-					self.trade_provider.read_budget() // open_value,
-					stop_loss=open_value - ((open_value / 100.0) * 0.5)
-				)
-				self.open_position(position)
+				open_value = last_stock_value["Close"]	
+				amount = self.trade_provider.read_budget() // open_value
+
+				if amount >= 1:
+					position = Position.Position(
+						ticker,
+						trade_time,
+						open_value,
+						self.trade_provider.read_budget() // open_value,
+						stop_loss=open_value - ((open_value / 100.0) * 0.5)
+					)
+					self.open_position(position)
 
 	def open_position(self, position: Position.Position):
 		self.openedPositions[position.ticker] = position

@@ -1,7 +1,7 @@
 import datetime
 import typing
 
-
+# TODO Do we really need this class? There is pandas Series object
 class Position:
 	ticker: str
 	open_time: datetime.datetime = datetime.datetime.min
@@ -27,7 +27,7 @@ class Position:
 		self.closed = True
 
 	def __str__(self):
-		return """Position:
+		return """Position [{ticker}]:
     -Open: {open} - {open_time}
     -{close}
     -Amount: {amount}
@@ -43,7 +43,8 @@ class Position:
 			amount=self.amount,
 			open_time=self.open_time,
 			stop=self.stop_loss,
-			take=self.take_profit
+			take=self.take_profit,
+			ticker=self.ticker
 		)
 
 
