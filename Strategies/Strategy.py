@@ -14,9 +14,9 @@ class Backtest:
 
 class Strategy:
 	# move min/max times to specific strategies
-	min_open_time: time = time(hour=8, minute=0)
-	max_open_time: time = time(hour=23, minute=58)
-	max_close_time: time = time(hour=23, minute=59)
+	min_open_time: time = time(hour=9, minute=0)
+	max_open_time: time = time(hour=14, minute=58)
+	max_close_time: time = time(hour=16, minute=59)
 	position_time_limit: int = 60  # in minutes
 	update_period: timedelta = timedelta(seconds=5)
 	backtest: Backtest = None
@@ -72,10 +72,10 @@ class Strategy:
 		if self.backtest is not None:
 			new_date: datetime = self.backtest.current_datetime + self.update_period
 
-			if new_date.hour > 17:  # next day if market is closed for today
-				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1, hours=9)
-			if new_date.hour < 9:   # to market open if it is not opened yet this day
-				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(hours=9)
+#			if new_date.hour > 17:  # next day if market is closed for today
+#				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1, hours=9)
+#			if new_date.hour < 9:   # to market open if it is not opened yet this day
+#				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(hours=9)
 			if new_date.isoweekday() > 5:  # to monday if weekend
 				new_date = new_date.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=8-new_date.isoweekday(), hours=9)
 

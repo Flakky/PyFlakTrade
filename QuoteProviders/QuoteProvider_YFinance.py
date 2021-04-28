@@ -39,7 +39,7 @@ class QuoteProviderYFinance(QuoteProvider):
 				else:
 					ticker_stocks.append(stocks_data)
 
-			ticker_stocks = ticker_stocks.tz_convert(None)
+#			ticker_stocks = ticker_stocks.tz_convert(None)
 			ticker_stocks = ticker_stocks.tz_localize(None)
 
 			self.quotes[ticker] = ticker_stocks

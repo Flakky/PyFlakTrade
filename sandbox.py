@@ -9,7 +9,7 @@ import TradeSystem
 
 # Just a playground function to test
 def play():
-	tickers = ["AAPL", "AMD", "M"]
+	tickers = ["AAPL", "AMD", "M", "INTC", "KO"]
 
 	backtest = Backtest()
 	strategy = StrategyMoveMeanProto(
@@ -18,14 +18,14 @@ def play():
 	)
 	trade_provider = TradeProviderTest(1000)
 	
-	quote_provider = QuoteProviderGenerator(
-		datetime.now() - timedelta(days=20),
-		datetime.now(),
-		timedelta(minutes=1),
-		tickers
-	)
+#	quote_provider = QuoteProviderGenerator(
+#		datetime.now() - timedelta(days=20),
+#		datetime.now(),
+#		timedelta(minutes=1),
+#		tickers
+#	)
 	
-	#quote_provider = QuoteProviderYFinance(tickers)
+	quote_provider = QuoteProviderYFinance(tickers)
 	
 	trader = Trader(
 		strategy,

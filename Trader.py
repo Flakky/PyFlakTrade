@@ -41,7 +41,7 @@ class Trader:
 		quote_request = self.strategy.get_quotes_request()
 		quote_request.ticker = ticker
 
-#		print("""Date: {start} - {end} - {ticker}""".format(ticker=ticker, start=quote_request.start, end=quote_request.end))
+		print("""{start} - {end} - {ticker}""".format(ticker=ticker, start=quote_request.start, end=quote_request.end), end="\r")
 
 		trade_data = self.quote_provider.read_quotes(quote_request)
 
