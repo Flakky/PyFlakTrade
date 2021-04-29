@@ -19,6 +19,7 @@ class Trader:
 	on_position_closed: Observer = Observer()
 	trade_provider: TradeProvider = None
 	quote_provider: QuoteProvider = None
+	#TODO Positions limit in %
 
 	def __init__(self,
 			strategy: Strategy.Strategy,

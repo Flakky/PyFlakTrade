@@ -9,7 +9,7 @@ import TradeSystem
 
 # Just a playground function to test
 def play():
-	tickers = ["AAPL", "AMD", "M", "INTC", "KO"]
+	tickers = ["AAPL"]
 
 	backtest = Backtest()
 	strategy = StrategyMoveMeanProto(
